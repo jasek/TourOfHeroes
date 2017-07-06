@@ -18,23 +18,27 @@ You need to install
 To install this project
 
 Create database
+
 Enter in terminal folder TourOfHeroes/TourOfHeroes/ and run
-'''
+```
 dotnet ef database update
-'''
+```
 
 Build Angular in watch mode
+
 Enter in terminal to TourOfHeroes/TourOfHeroes/frontend folder and run
 ```
 ng build --watch
 ```
 Build application
+
 Enter in terminal folder TourOfHeroes/TourOfHeroes/ and run
-'''
+```
 dotnet build
-'''
+```
 
 Run application
+
 Enter in terminal folder TourOfHeroes/TourOfHeroes/ and run
 ```
 dotnet run
