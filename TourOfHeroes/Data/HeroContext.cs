@@ -1,10 +1,16 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore;
+using TourOfHeroes.Models;
+
 namespace TourOfHeroes.Data
 {
-    public class HeroContext
+    public class HeroContext: DbContext
     {
-        public HeroContext()
+		public HeroContext(DbContextOptions<HeroContext> options)
+			: base(options)
         {
         }
+
+        public DbSet<Hero> Heroes { get; set; }
     }
 }

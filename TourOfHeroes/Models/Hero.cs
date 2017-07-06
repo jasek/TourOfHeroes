@@ -10,26 +10,18 @@ namespace TourOfHeroes.Models
     // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
     public class Hero
     {
-        private readonly RequestDelegate _next;
-
-        public Hero(RequestDelegate next)
+        public Hero()
         {
-            _next = next;
         }
 
-        public Task Invoke(HttpContext httpContext)
+        public Hero(int Id, string Name)
         {
-
-            return _next(httpContext);
+            this.Id = Id;
+            this.Name = Name;
         }
-    }
 
-    // Extension method used to add the middleware to the HTTP request pipeline.
-    public static class HeroExtensions
-    {
-        public static IApplicationBuilder UseMiddlewareClassTemplate(this IApplicationBuilder builder)
-        {
-            return builder.UseMiddleware<Hero>();
-        }
+        public int Id { get; set; }
+        public string Name { get; set; }
+
     }
 }

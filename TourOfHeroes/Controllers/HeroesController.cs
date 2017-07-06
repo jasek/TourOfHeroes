@@ -1,44 +1,101 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using TourOfHeroes.Data;
+using TourOfHeroes.Models;
 
 namespace TourOfHeroes.Controllers
 {
     [Route("api/[controller]")]
-    public class ValuesController : Controller
+    public class HeroesController : Controller
     {
-        // GET api/values
+        private readonly HeroContext dbContext;
+
+        public HeroesController(HeroContext heroContext)
+        {
+            dbContext = heroContext;
+        }
+
+        // GET api/heroes
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Hero> Get()
         {
-            return new string[] { "value1", "value2" };
+            return dbContext.Heroes.ToList();
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // GET api/heroes/search/Mr
+        [HttpGet("search/{name}")]
+        public IEnumerable<Hero> Search(string name)
         {
-            return "value";
+            return dbContext.Heroes.Where(x => x.Name.StartsWith(name, StringComparison.OrdinalIgnoreCase));
         }
 
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody]string value)
+		// GET api/heroes/5
+		[HttpGet("{id}")]
+        public IActionResult Get(int id)
         {
+            var hero = dbContext.Heroes.FirstOrDefault(x => x.Id == id);
+            if (hero == null)
+            {
+                return NotFound();
+            }
+
+            return new ObjectResult(hero);
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+		// POST api/heroes
+		[HttpPost]
+        public IActionResult Post([FromBody]Hero hero)
         {
+            if (hero == null)
+            {
+                return BadRequest();
+            }
+
+            dbContext.Heroes.Add(hero);
+            dbContext.SaveChanges();
+
+            return new ObjectResult(hero);
         }
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+		// PUT api/heroes/5
+		[HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody]Hero hero)
         {
+            if (hero == null)
+            {
+                return BadRequest();
+            }
+
+            var herofromdb = dbContext.Heroes.FirstOrDefault(x => x.Id == id);
+            if (herofromdb == null)
+            {
+                return NotFound();
+            }
+
+            herofromdb.Name = hero.Name;
+
+            dbContext.Heroes.Update(herofromdb);
+            dbContext.SaveChanges();
+
+            return new NoContentResult();
+        }
+
+		// DELETE api/heroes/5
+		[HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var herofromdb = dbContext.Heroes.FirstOrDefault(x => x.Id == id);
+            if (herofromdb == null)
+            {
+                return NotFound();
+            }
+
+            dbContext.Heroes.Remove(herofromdb);
+            dbContext.SaveChanges();
+
+            return new NoContentResult();
         }
     }
 }
